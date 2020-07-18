@@ -1,0 +1,35 @@
+$package("platform.myapp1.client")
+
+$import(
+	"app.lang.UIModule",
+	"util.rmi.jsonRequest"
+)
+
+platform.myapp1.client.demo = function(cfg){
+	this.prop1 = "hello";
+	this.prop2 = "world";
+	platform.myapp1.client.demo.superclass.constructor.apply(this,[cfg]);
+}
+
+Ext.extend(platform.myapp1.client.demo, app.lang.UIModule, {
+	initPanel:function(){
+		var panel = new Ext.Panel({
+			html:this.prop1+" "+this.prop2,
+			tbar:this.createButtons()
+		})
+		this.panel = panel;
+		return panel;
+	},
+	doDemo:function(){
+		util.rmi.jsonRequest({
+				serviceId:"platform.demoService",
+				method:"getToday"
+			},function(code,msg,json){
+				if(code < 300){
+					alert($encode(json.body))
+				}else{
+					alert(msg)
+				}
+			},this)
+	}
+})

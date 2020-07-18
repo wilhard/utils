@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="platform.myapp1.myapp1" name="demo">
+	<catagory id="myapp1_cata" name="catagory">
+		<module id="module1" name="demoModule"	script="platform.myapp1.client.demo">
+			<action id="demo" name="click me" />
+		</module>
+	</catagory>
+</application>

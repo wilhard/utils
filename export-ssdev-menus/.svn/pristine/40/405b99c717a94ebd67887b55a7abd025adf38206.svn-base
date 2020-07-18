@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class entity-name="BASE_ManageUnitType" table="BASE_ManageUnitType">
+		<id name="id" type="java.lang.Integer" length="30">
+			<column name="id" />
+			<generator class="increment" />
+		</id>
+		<property name="typeCode" type="java.lang.String" length="10" />
+		<property name="typeName" type="java.lang.String" length="50" />
+		<property name="roleId" type="java.lang.String" length="100" />
+		<property name="manageType" type="java.lang.String" length="20" />
+		<property name="domain" type="java.lang.String" length="50" />
+</class>
+</hibernate-mapping>

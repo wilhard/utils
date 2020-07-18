@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class entity-name="BASE_RoleProperties" table="BASE_RoleProperties">
+		<id name="id" type="java.lang.Integer" length="30">
+			<column name="id" />
+			<generator class="increment" />
+		</id>
+		<property name="urt" type="java.lang.Integer" length="50" />
+		<property name="propKey" type="java.lang.String" length="50" />
+		<property name="propValue" type="java.lang.String" length="50" />
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<dic alias="性别字典">
+  <item key="0" text="未知的性别" mCode="0"/>
+  <item key="1" text="男" mCode="1"/>
+  <item key="2" text="女" mCode="2"/>
+  <item key="9" text="未说明的性别" mCode="9"/>
+</dic>

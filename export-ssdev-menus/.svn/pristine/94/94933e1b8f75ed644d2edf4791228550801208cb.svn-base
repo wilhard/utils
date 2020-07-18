@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dic alias="身份证件类型字典">
+	<item key="01" text="居民身份证"/>
+	<item key="02" text="居民户口簿"/>
+	<item key="03" text="护照"/>
+	<item key="04" text="军官证"/>
+	<item key="05" text="驾驶证"/>
+	<item key="06" text="港澳居民身份证"/>
+	<item key="07" text="台湾居民来往内地通行证"/>
+	<item key="99" text="其他法定有效证件"/>
+</dic>

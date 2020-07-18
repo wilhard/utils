@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://code.alibabatech.com/schema/dubbo"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.bsoft.com.cn/schema/ssdev-esb">
+	
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	
+	<xsd:annotation>
+		<xsd:documentation><![CDATA[ Namespace support for the dubbo services provided by dubbo framework. ]]></xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:element name="wsProxyService">
+		<xsd:annotation>
+			<xsd:documentation></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="wsdl" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The wsdl address. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="protocol">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[ The protocol config. ]]></xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="protocol" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The supported protocol type. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="port" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The port of current protocol. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="ref" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The ref name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="class" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The class name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>

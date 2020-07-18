@@ -1,0 +1,174 @@
+/**
+ * @author wangjianbo
+ * @created 2018-10-25
+ */
+package com.iamnotme.utils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.http.client.ClientProtocolException;
+import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ctd.util.JSONUtils;
+
+/**
+ * @author wangjianbo
+ *
+ */
+public class AutoLoggerJob {
+	Logger logger = LoggerFactory
+			.getLogger(AutoLoggerJob.class);
+	public void execute() throws JobExecutionException {
+		Date yesterday=DateUtils.dateBefore(new Date(),1);
+		try {
+			/**
+			 * 判断这一天是不是工作日
+			 */
+			if(!isWorkday(yesterday)){
+				logger.info(DateUtils.format(yesterday)+"非工作日，不需要写日志");
+				return;
+			}
+			List<Config> cfg=loadConfig();
+			for(Config c:cfg){
+				AutoLogger.writeByDate(c.getUserId(), c.getPassword(), yesterday, c.getDefaultConent());
+			}
+		} catch (ClientProtocolException e) {
+			logger.error("日志补录出错", e);
+		} catch (IOException e) {
+			logger.error("日志补录出错", e);
+		}
+	}
+	
+	class Config{
+		private String userId;
+		private String password;
+		private String defaultConent;
+		public String getUserId() {
+			return userId;
+		}
+		public void setUserId(String userId) {
+			this.userId = userId;
+		}
+		public String getPassword() {
+			return password;
+		}
+		public void setPassword(String password) {
+			this.password = password;
+		}
+		public String getDefaultConent() {
+			return defaultConent;
+		}
+		public void setDefaultConent(String defaultConent) {
+			this.defaultConent = defaultConent;
+		}
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			// TODO Auto-generated method stub
+			return JSONUtils.toString(this);
+		}
+		
+		
+	}
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private List<Config> loadConfig(){
+		String filePath=this.getClass().getResource("/accounts.xls").getPath();
+		File file=new File(filePath);
+		List<List> data=ExcelReader.readExcel(file);
+		List<Config> cfg=new ArrayList<AutoLoggerJob.Config>();
+		for(int i=1;i<data.size();i++){
+			List l=data.get(i);
+			if(l.size()>0){
+				Config c=new Config();
+				c.setUserId((String) l.get(0));
+				if(l.size()>0){
+					
+					c.setPassword((String) l.get(1));
+					
+					if(l.size()>2){
+						c.setDefaultConent((String) l.get(2));
+					}
+				}
+				cfg.add(c);
+			}
+		}
+		return cfg;
+	}
+	/**
+	 * 判断指定日期是否为工作日
+	 * @author wangjianbo
+	 * @created 2018-11-21
+	 * @param yesterday
+	 * @return
+	 * @throws IOException 
+	 * @throws ClientProtocolException 
+	 */
+	@SuppressWarnings("unchecked")
+	private static boolean isWorkday(Date yesterday) throws ClientProtocolException, IOException{
+		DateFormat df = new SimpleDateFormat("yyyyMMdd");
+		String time = df.format(yesterday);
+		//智能节假日 接口API地址
+		String json=HttpClientUtil.get("http://tool.bitefu.net/jiari//?d="+time+"&back=json", null, null);
+		Map<String,Object> map=JSONUtils.parse(json, Map.class);
+		return "0".equals(map.get(time));
+	}
+	/**
+	 * 调用http API接口
+	 */
+	public static String getURLContent(String urlStr) {
+		/** 网络的url地址 */
+		URL url = null;
+		/** http连接 */
+		HttpURLConnection httpConn = null;
+		/**//** 输入流 */
+		BufferedReader in = null;
+		StringBuffer sb = new StringBuffer();
+		try {
+			url = new URL(urlStr);
+			in = new BufferedReader(new InputStreamReader(url.openStream(), "GBK"));
+			String str = null;
+			while ((str = in.readLine()) != null) {
+				sb.append(str);
+			}
+		} catch (Exception ex) {
+
+		} finally {
+			try {
+				if (in != null) {
+					in.close();
+				}
+			} catch (IOException ex) {
+			}
+		}
+		String result = sb.toString();
+		return result;
+	}
+	public static void main(String[] args) throws ClientProtocolException, IOException {
+//		AutoLoggerJob job=new AutoLoggerJob();
+//		System.out.println(job.loadConfig());
+		
+		/*Calendar c=Calendar.getInstance();
+		c.setTime(DateUtils.parse("2018-11-18"));
+		int weekday=c.get(Calendar.DAY_OF_WEEK);
+		System.out.println(weekday);*/
+		
+//		System.out.println(isWorkday(DateUtils.parse("2019-01-16")));
+		
+		
+	}
+}

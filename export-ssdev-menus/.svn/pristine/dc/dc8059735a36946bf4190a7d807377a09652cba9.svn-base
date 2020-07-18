@@ -1,0 +1,29 @@
+package platform.myapp1.source;
+
+import java.util.Date;
+
+import ctd.util.annotation.RpcService;
+import ctd.util.context.Context;
+import ctd.util.context.ContextUtils;
+
+public class DemoService {
+	
+	/**
+	 * use for local
+	 * @return
+	 */
+	public Date getYestoday(){
+		Context ctx = ContextUtils.getContext();
+		return ctx.get("server.date.yesterday", Date.class);
+	}
+	
+	/**
+	 * use for remote
+	 * @return
+	 */
+	@RpcService
+	public Date getToday(){
+		return new Date();
+	}
+
+}

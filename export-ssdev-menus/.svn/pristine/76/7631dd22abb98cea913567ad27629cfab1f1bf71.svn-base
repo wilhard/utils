@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<organ id="3301" name="杭州创业软件股份有限公司" type="R" ref="PDY10000-1">
+	<properties>
+		<p name="appwelcome">false</p>  <!-- 一级菜单欢迎界面显示设置 -->
+		<p name="sysMessage">false</p> <!-- 配置首页消息系统是否启用 -->
+	</properties>
+	<installedApps>
+	    <app id="platform.myapp1.myapp1"/>
+	    <app id="platform.myapp2.myapp2"/>
+	</installedApps>
+	<unit id="330102" name="dept1" type="S" ref="PDY12000-4"/>
+</organ>

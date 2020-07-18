@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/util	
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- set spring context to use,should be in the first -->
+	<!--<bean class="ctd.util.AppContextHolder">
+		<property name="devMode" value="true"/>
+	</bean>-->
+	
+	<import resource="spring-hibernate.xml"/>
+	<import resource="spring-service.xml"/>
+
+	<bean class="ctd.domain.DomainUtil" init-method="init"/>
+	
+	<bean id="defaultExecutor" class="ctd.net.rpc.server.executor.support.DefaultExecutor" />
+	<bean id="hibernateSupportExecutor" class="ctd.net.rpc.server.executor.support.HibernateSupportExecutor" />
+	<bean id="executorFactory" class="ctd.net.rpc.server.executor.ExecutorFactory">
+		<property name="executors">
+			<list>
+				<ref bean="defaultExecutor" />
+				<ref bean="hibernateSupportExecutor"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="daoFactory" class="ctd.dao.DAOFactory" >
+		<property name="defaultDaoClass" value="ctd.dao.support.HibernateMapSupportDAO"/>
+	</bean>
+	<bean id="mvcDictionaryLoader" class="ctd.mvc.controller.support.DictionaryLoader">
+		<property name="expiresSeconds" value="15" />
+	</bean>
+	<bean id="mvcLogonManager" class="ctd.mvc.controller.support.LogonManager">
+		<property name="expiresSeconds" value="15"/>
+<!--		<property name="encryptEnable" value="true" />-->
+	</bean>
+	<bean id="mvcSchemaLoader" class="ctd.mvc.controller.support.SchemaLoader">
+		<property name="expiresSeconds" value="15" />
+	</bean>
+	<bean id="mvcScriptLoader" class="ctd.mvc.controller.support.ScriptLoader">
+		<property name="expiresDefinesMap">
+			<map>
+				<entry key="sencha.ext3.ext-base">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="sencha.ext3.ext-all">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+			</map>
+		</property>
+		<property name="expiresSeconds" value="15"/>
+	</bean>
+	<bean id="mvcSWFLoader" class="ctd.mvc.controller.support.SWFLoader" >
+		<property name="expiresDefinesMap">
+			<map>
+				<entry key="framework_4.5.1.21328">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="rpc_4.5.1.21328">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="osmf_1.0.0.16316">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="mx_4.5.1.21328">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="spark_4.5.1.21328">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="sparkskins_4.5.1.21328">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+				<entry key="textLayout_2.0.0.232">
+					<util:constant static-field="ctd.util.ServletUtils.ONE_WEEK_SECONDS" />
+				</entry>
+			</map>
+		</property>
+		<property name="expiresSeconds" value="15"/>
+	</bean>
+	<bean id="mvcStaticResourceLoader" class="ctd.mvc.controller.support.StaticResourceLoader">
+		<property name="expiresSeconds" value="15"/>
+	</bean>
+
+	<bean id="simpleSave" class="ctd.service.dao.SimpleSave"/>
+	<bean id="simpleLoad" class="ctd.service.dao.SimpleLoad"/>
+	<bean id="simpleLoadWithParentRelation" class="ctd.service.dao.SimpleLoadWithParentRelation"/>
+	<bean id="simpleRemove" class="ctd.service.dao.SimpleRemove"/>
+	<bean id="simpleQuery" class="ctd.service.dao.SimpleQuery"/>
+	
+	<bean id="dicConfig" class="ctd.service.configure.DicConfig"/>
+	<bean id="parseExcel" class="ctd.service.configure.ParseExcel"/>
+	<bean id="activeNodeQuery" class="ctd.monitor.service.ActiveNodeQuery"/>
+	<bean id="monInfo" class="ctd.monitor.service.MonInfo"/>
+	
+    <bean id="mvcPhotoLoader" class="ctd.mvc.controller.support.PhotoLoader" >
+		<property name="expiresSeconds" value="15"/>
+	</bean>
+	<bean id="mvcPhotoUpload" class="ctd.mvc.controller.support.PhotoUpload" >
+		<property name="expiresSeconds" value="15"/>
+		<property name="photoDirectory" value="temp"/>
+		<property name="imgDirectory" value="photo"/>
+		<property name="fileUploadMaxSize" value="5M"/>
+	</bean>
+	
+	<bean id="mvcFileUpload" class="ctd.mvc.controller.support.FileUploader" >
+		<property name="expiresSeconds" value="15"/>
+		<property name="fileUploadMaxSize" value="5M"/>
+		<property name="tempDirectory" value="temp"/>
+	</bean>
+	
+	<bean id="welcomeService" class="ctd.service.home.HomePageService" />
+	<!--用于便捷模块 -->
+	<bean id="quickService" class="ctd.service.home.QuickService"/>
+
+</beans>

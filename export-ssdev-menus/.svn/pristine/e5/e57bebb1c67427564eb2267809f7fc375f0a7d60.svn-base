@@ -1,0 +1,2 @@
+http\://www.bsoft.com.cn/schema/ssdev-esb=com.bsoft.esb.spring.EsbNamespaceHandler
+http\://www.bsoft.com.cn/schema/ssdev=ctd.spring.parse.NamespaceHandler

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="auto-work-logger"
+  id="myeclipse.1480560999426"
+  context-root="/bsoft-logger"
+  j2ee-spec="5.0"
+  archive="auto-work-logger.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

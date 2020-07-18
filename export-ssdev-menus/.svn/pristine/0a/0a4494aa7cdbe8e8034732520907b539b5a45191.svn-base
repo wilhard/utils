@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<role id="platform.system" name="系统管理员">
+	<accredit>
+		<apps acType="whitelist">
+			<others />
+		</apps>
+		<storage acType="whitelist">
+			<others acValue="1111" />
+		</storage>
+	</accredit>
+</role>

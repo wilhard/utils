@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class name="ctd.account.UserRoleToken" table="BASE_UserRoles">
+			<id name="id" type="java.lang.Integer">
+            	<column name="id" />
+				<generator class="increment" />
+        	</id>
+        	<property name="userId" type="java.lang.String" length="20" />
+        	<property name="roleId" type="java.lang.String" length="50" />
+        	<property name="manageUnitId" type="java.lang.String" length="50" />
+        	<property name="regionCode" type="java.lang.String" length="50" />
+        	<property name="organId" type="java.lang.String" length="50" />
+        	<property name="groupId" type="java.lang.String" length="1" />
+        	<property name="lastLoginTime" type="java.util.Date"  />
+        	<property name="lastIPAddress" type="java.lang.String" length="18" />
+        	<property name="logoff" type="java.lang.String" length="1" />
+        	<property name="domain" type="java.lang.String" length="8" />
+</class>
+</hibernate-mapping>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entry entityName="SYS_Personnel" alias="人员注册">
+	<item id="personId" alias="人员编号" type="string" queryable="true" pkey="true" generator="assigned"  not-null="1" length="50"/>
+	<item id="personName" alias="人员姓名" type="string" queryable="true" not-null="1" length="50"/>
+	<item id="cardtype" alias="身份证件类型" type="string" width="150" not-null="1" length="25" defaultValue="01">
+		<dic id="platform.myapp2.dic.cardtype"/>
+	</item>
+	<item id="cardnum" alias="身份证件号码" type="string" width="150" not-null="1" queryable="true" length="25"/>
+	<item id="birthday" alias="出生日期" type="date"/>
+	<item id="gender" alias="性别" type="string" length="1" width="40" defaultValue="1">
+		<dic id="platform.myapp2.dic.gender"/>
+	</item>
+	<item id="ethnic" alias="民族" type="string" width="60" defaultValue="01">
+		<dic id="platform.myapp2.dic.ethnic"/>
+	</item>
+	<item id="hometown" alias="籍贯" type="string" width="100" length="150"/>
+</entry>

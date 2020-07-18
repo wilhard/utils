@@ -1,0 +1,26 @@
+package platform;
+/**
+ * @author wangjianbo
+ * @created 2018-5-25
+ */
+
+
+import javax.jws.WebService;
+
+/**
+ * @author wangjianbo
+ *
+ */
+@WebService(endpointInterface="platform.WebServiceInterface")
+public class WebServiceImpl implements WebServiceInterface {
+
+	/* (non-Javadoc)
+	 * @see com.bsoft.rkjkjk.core.WebServiceInterface#call(java.lang.String)
+	 */
+	@Override
+	public String call(String input) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

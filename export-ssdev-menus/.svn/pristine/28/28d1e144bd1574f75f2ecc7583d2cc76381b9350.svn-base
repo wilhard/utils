@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application id="platform.myapp2.myapp2" name="sample">
+	<catagory id="myapp2_cata" name="catagory">
+		<module id="module1" name="sampleModule" script="app.modules.list.SimpleListView">
+			<properties>
+				<p name="entryName">platform.myapp2.schemas.SYS_Personnel</p>
+			</properties>
+			<action id="read" name="查看" />
+			<action id="create" name="新建" />
+			<action id="update" name="修改" />
+			<action id="remove" name="删除" />
+		</module>
+	</catagory>
+</application>

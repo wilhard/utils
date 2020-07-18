@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+ "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+ "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+<class entity-name="BASE_Role" table="BASE_Role">
+			<id name="id" type="java.lang.String">
+            	<column name="id"/>
+            	<generator class="assigned" />
+        	</id>
+        	<property name="name" type="java.lang.String" length="30" />
+        	<property name="description" type="java.lang.String" length="200" />
+</class>
+</hibernate-mapping>

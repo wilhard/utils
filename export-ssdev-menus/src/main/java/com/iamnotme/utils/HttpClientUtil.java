@@ -1,0 +1,272 @@
+/**
+ * @author wangjianbo
+ * @created 2018-10-10
+ */
+package com.iamnotme.utils;
+
+import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+
+import org.apache.commons.collections4.MapUtils;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpParams;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ctd.util.JSONUtils;
+
+/**
+ * 对HTTPClient的封装
+ */
+@SuppressWarnings("deprecation")
+public class HttpClientUtil {
+	protected static Logger logger = LoggerFactory
+            .getLogger(HttpClientUtil.class);
+	private static final String ENCODING = "UTF-8";
+
+	private static HttpClient client = null;
+	private static BasicCookieStore cookieStore;
+	private static SchemeRegistry schemeRegistry; // 协议控制
+	private static PoolingClientConnectionManager ccm; // HttpClient连接池(多连接的线程安全的管理器)
+	
+	private static RequestConfig requestConfig;
+	static {
+		try {
+			/*
+			 * 与https请求相关的操作
+			 */
+			SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
+			sslContext.init(null,
+					new TrustManager[] { new MyX509TrustManager() },
+					new SecureRandom());
+			SSLSocketFactory socketFactory = new SSLSocketFactory(sslContext);
+			/*
+			 * 定义访问协议
+			 */
+			schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("http", 80, PlainSocketFactory
+					.getSocketFactory()));// http
+			schemeRegistry.register(new Scheme("https", 443, socketFactory));// https
+		} catch (Exception e) {
+			logger.error("初始化错误",e);
+		}
+
+		Properties props = FileUtil.loadProps("http.properties");// 加载属性文件
+
+		// 连接池管理
+		ccm = new PoolingClientConnectionManager(schemeRegistry);
+		ccm.setDefaultMaxPerRoute(FileUtil.getInt(props,
+				"httpclient.max.conn.per.route", 20));// 每个路由的最大连接数
+		ccm.setMaxTotal(FileUtil
+				.getInt(props, "httpclient.max.conn.total", 400));// 最大总连接数
+
+		HttpParams httpParams = new BasicHttpParams();
+		httpParams.setParameter(CoreConnectionPNames.CONNECTION_TIMEOUT,
+				FileUtil.getInt(props, "httpclient.max.conn.timeout", 1000));// 连接超时时间（ms）
+		httpParams.setParameter(CoreConnectionPNames.SO_TIMEOUT,
+				FileUtil.getInt(props, "httpclient.max.socket.timeout", 2000));// 操作超时时间（ms）
+		httpParams.setParameter(CoreProtocolPNames.PROTOCOL_VERSION,
+				HttpVersion.HTTP_1_1);// 设置http1.1或http1.0
+
+		cookieStore  = new BasicCookieStore();
+		HttpClients.custom().setDefaultCookieStore(cookieStore);
+		client = new DefaultHttpClient(ccm, httpParams);// 一个客户端就有一个连接池
+		
+		RequestConfig.Builder builder=RequestConfig.custom();
+		if("true".equals(props.getProperty("proxy.enabled"))) {
+			String proxyHost=props.getProperty("proxy.host");
+			String port=props.getProperty("proxy.port");
+			HttpHost httpHost=new HttpHost(proxyHost, Integer.parseInt(port));
+			builder.setProxy(httpHost);
+		}
+//		builder.setConnectTimeout(30000);
+//		builder.setSocketTimeout(30000);
+		requestConfig=builder.build();
+	}
+
+	/**
+	 * get请求
+	 * 
+	 * @param url
+	 *            请求URL
+	 * @param paramMap
+	 *            请求参数
+	 * @param headerMap
+	 *            请求头信息
+	 */
+	public static String get(String url, Map<String, Object> paramMap,
+			Map<String, String> headerMap) throws ClientProtocolException,
+			IOException {
+		/*
+		 * 拼接URL与参数
+		 */
+		if (MapUtils.isNotEmpty(paramMap)) {
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			for (String key : paramMap.keySet()) {
+				params.add(new BasicNameValuePair(key, String.valueOf(paramMap.get(key))));
+			}
+			String queryString = URLEncodedUtils.format(params, ENCODING);
+			if (url.indexOf("?") > -1) {// 存在?，表示这时的URL已经带参数了
+				url += "&" + queryString;
+			} else {
+				url += "?" + queryString;
+			}
+		}
+
+		HttpGet httpGet = new HttpGet(url);
+		httpGet.setConfig(requestConfig);
+		/*
+		 * 设置头信息
+		 */
+		if (MapUtils.isNotEmpty(headerMap)) {
+			Set<String> keySet = headerMap.keySet();
+			for (String key : keySet) {
+				httpGet.addHeader(key, headerMap.get(key));
+			}
+		}
+
+		String result = "";
+
+		HttpResponse response = client.execute(httpGet); // 发出get请求
+		StatusLine status = response.getStatusLine(); // 获取返回的状态码
+		HttpEntity entity = response.getEntity(); // 获取返回的响应内容
+		if (status.getStatusCode() == HttpStatus.SC_OK) { // 200
+			result = EntityUtils.toString(entity, ENCODING);
+		}
+
+		httpGet.abort();// 中止请求，连接被释放回连接池
+		return result;
+	}
+	public static Map<String,Object> post(String url, Map<String, Object> paramMap) throws ClientProtocolException,
+			IOException {
+		return post(url, paramMap, null, null);
+	}
+	/**
+	 * post请求
+	 * 
+	 * @param url
+	 *            //请求URL
+	 * @param paramMap
+	 *            //请求参数
+	 * @param headerMap
+	 *            //请求头信息
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String,Object> post(String url, Map<String, Object> paramMap,
+			Map<String, String> headerMap,Map<String, String> responseHeader) throws ClientProtocolException,
+			IOException {
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setConfig(requestConfig);
+
+		/*
+		 * 设置头信息
+		 */
+		if (headerMap!=null && MapUtils.isNotEmpty(headerMap)) {
+			Set<String> keySet = headerMap.keySet();
+			for (String key : keySet) {
+				httpPost.addHeader(key, headerMap.get(key));
+			}
+		}
+		
+
+		String result = "";
+
+		httpPost.setEntity(new StringEntity(JSONUtils.toString(paramMap),ENCODING));// 设置参数
+		HttpResponse response = client.execute(httpPost); // 发出post请求
+		StatusLine status = response.getStatusLine(); // 获取返回的状态码
+		HttpEntity entity = response.getEntity(); // 获取响应内容
+		if (status.getStatusCode() == HttpStatus.SC_OK) {
+			result = EntityUtils.toString(entity, ENCODING);
+		}
+		
+		if(responseHeader!=null){
+			
+			for(Header h:response.getAllHeaders()){
+				responseHeader.put(h.getName(), h.getValue());
+			}
+		}
+		httpPost.abort();// 中止请求，连接被释放回连接池
+		return JSONUtils.parse(result, HashMap.class);
+	}
+	@SuppressWarnings("unchecked")
+	public static Map<String,Object> post(String url,String json,
+			Map<String, String> headerMap,Map<String, String> responseHeader) throws ClientProtocolException,
+			IOException {
+		HttpPost httpPost = new HttpPost(url);
+		httpPost.setConfig(requestConfig);
+		/*
+		 * 设置头信息
+		 */
+		if (MapUtils.isNotEmpty(headerMap)) {
+			Set<String> keySet = headerMap.keySet();
+			for (String key : keySet) {
+				httpPost.addHeader(key, headerMap.get(key));
+			}
+		}
+		
+		
+		String result = "";
+			
+		httpPost.setEntity(new StringEntity(json,ENCODING));// 设置参数
+		HttpResponse response = client.execute(httpPost); // 发出post请求
+		StatusLine status = response.getStatusLine(); // 获取返回的状态码
+		HttpEntity entity = response.getEntity(); // 获取响应内容
+		if (status.getStatusCode() == HttpStatus.SC_OK) {
+			result = EntityUtils.toString(entity, ENCODING);
+		}
+		
+		if(responseHeader!=null){
+			
+			for(Header h:response.getAllHeaders()){
+				responseHeader.put(h.getName(), h.getValue());
+			}
+		}
+		httpPost.abort();// 中止请求，连接被释放回连接池
+		return JSONUtils.parse(result, HashMap.class);
+	}
+	
+
+
+	/**
+	 * 测试
+	 */
+	public static void main(String[] args) {
+		
+	}
+}

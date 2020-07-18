@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns="http://www.bsoft.com.cn/schema/ssdev"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	targetNamespace="http://www.bsoft.com.cn/schema/ssdev">
+	
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+	
+	<xsd:annotation>
+		<xsd:documentation><![CDATA[ Namespace support for the ssdev services provided by ssdev framework. ]]></xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:element name="applicationDomain">
+		<xsd:annotation> 
+			<xsd:documentation><![CDATA[ The application config ]]></xsd:documentation> 
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="name" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The application name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="rpcServerWorkUrl" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The application work url. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="registryAddress" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The zookeeper host. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="enableLogger" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ Enable log. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="service">
+		<xsd:annotation> 
+			<xsd:documentation><![CDATA[ The application config ]]></xsd:documentation> 
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="ref" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The ref name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="class" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The class name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="weights" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The weights arg for balance. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="subscribe" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The topic for subscribe. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="subscribeWay" type="xsd:string">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The subscribeWay is host or service. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:element name="reference">
+		<xsd:annotation> 
+			<xsd:documentation><![CDATA[ The application config ]]></xsd:documentation> 
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:attribute name="id" type="xsd:ID" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The unique identifier for a bean. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="interface" type="xsd:string" use="required">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[ The interface name. ]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
